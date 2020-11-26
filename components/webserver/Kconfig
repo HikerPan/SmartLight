@@ -1,0 +1,10 @@
+menu "WEB_SERVER"
+
+    config WEB_SERVER_FILE_PATH
+        string "web file save path"
+        default "/lfs/web"
+        help 
+			config web server file path
+					
+
+endmenu

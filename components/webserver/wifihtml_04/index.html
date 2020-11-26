@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title id="title">index</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link href="bootstrap.min.css" rel="stylesheet">
+		<script src="jquery-1.11.1.min.js"></script>
+		<script src="bootstrap.min.js"></script>
+		<script type="text/javascript" src="./echarts.min.js"></script>
+		<script src="index.js"></script>
+
+		<style>	
+			.navbar-nav li:hover,			
+			.breadcrumb li:hover {
+				cursor: pointer;
+			}			
+			body {
+				padding-top: 50px;
+			}			
+			.sub-header {
+				padding-bottom: 10px;
+				border-bottom: 1px solid #eee;
+			}			
+			.navbar-fixed-top {
+				border: 0;
+			}
+			.main {
+				padding: 20px;
+			}			
+			@media (min-width: 768px) {
+				.main {
+					padding-right: 40px;
+					padding-left: 40px;
+				}
+			}			
+			.main .page-header {
+				margin-top: 0;
+			}			
+			.placeholders {
+				margin-bottom: 30px;
+				text-align: center;
+			}			
+			.placeholders h4 {
+				margin-bottom: 0;
+			}			
+			.placeholder {
+				margin-bottom: 20px;
+			}			
+			.placeholder img {
+				display: inline-block;
+				border-radius: 50%;
+			}
+			.cont
+		</style>
+	</head>
+
+	<body>
+		<div class="navbar navbar-fixed-top navbar-inverse">
+			<div class="container-fluid">
+				<div class="row" >
+					<div class="col-md-1 col-sm-1  col-xs-1" ></div>
+					<p id="devName" class="navbar-brand"><strong>PSR</strong></p>
+		
+					<div class="collapse navbar-collapse navbar-right" id="navBar" style="margin-right: 50px;">
+						<ul class="nav navbar-nav navbar-right">
+							<li><a id="date">2019-01-01 00:00:00 星期一</a></li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div id="content">
+			<div class="container-fluid">
+				<div class="row">
+					<div class="main">
+						<ul class="breadcrumb">
+							<li><a id="timer" class="lead">PDI</a></li>
+							<span id="ChassID" style="width: 15%; text-align: center; margin-left: 20%; font-size: large;">ChassID:</span>
+							<span id="DeviceID" style="width: 15%; text-align: center; margin-left: 27%; font-size: large;">DeviceID:</span>
+						</ul>																									
+						<!--左边内容-->
+						<div class="col-md-4 col-sm-4  col-xs-12" style=" float:left;border-right-color: #000000;min-height: 20px">	
+								<table style="text-align: left;margin-left: 4%;width: 92%">
+									<tr> 
+										<td style="font-size: 20px;height: 30px" colspan="4">
+											Config列表
+										</td>
+									</tr>
+									<tr id="changeColor1" style="font-size: 17px;height: 40px">
+										<td width="35%" >远程锁车:</td>
+										<td width="15%">
+											<button onclick="machineControl('lockMachine',true)" type="button" class="btn btn-danger" data-toggle="button" aria-pressed="false" autocomplete="off">
+										  		锁车
+											</button>
+										</td>
+										<td width="15%">
+											<button onclick="machineControl('lockMachine',false)" type="button" class="btn btn-success" data-toggle="button" aria-pressed="false" autocomplete="off">
+										  		解锁
+											</button>
+										</td>
+										<td align="center" id="lockMachineState">Loading</td>
+									</tr>
+									<tr id="changeColor1" style="font-size: 17px;height: 40px">
+										<td width="25%">电源断线锁车:</td>
+										<td width="15%">
+											<button onclick="machineControl('powerlineCutLock',true)" type="button" class="btn btn-danger" data-toggle="button" aria-pressed="false" autocomplete="off">
+										  		锁车
+											</button>
+										</td>
+										<td width="15%">
+											<button onclick="machineControl('powerlineCutLock',false)" type="button" class="btn btn-success" data-toggle="button" aria-pressed="false" autocomplete="off">
+										  		解锁
+											</button>
+										</td>
+										<td align="center" id="powerlineCutLockState">Loading</td>
+									</tr>
+									<tr id="changeColor1" style="font-size: 17px;height: 40px">
+										<td width="25%">天线断线锁车:</td>
+										<td width="15%">
+											<button onclick="machineControl('gpsCableCutLock',true)" type="button" class="btn btn-danger" data-toggle="button" aria-pressed="false" autocomplete="off">
+										  		锁车
+											</button>
+										</td>
+										<td width="15%">
+											<button onclick="machineControl('gpsCableCutLock',false)" type="button" class="btn btn-success" data-toggle="button" aria-pressed="false" autocomplete="off">
+										  		解锁
+											</button>
+										</td>
+										<td align="center" id="gpsCableCutLockState">Loading</td>
+									</tr>
+									<tr id="changeColor1" style="font-size: 17px;height: 40px">
+										<td width="25%">地理围栏锁车:</td>
+										<td width="15%">
+											<button onclick="machineControl('geoFenceLock',true)" type="button" class="btn btn-danger" data-toggle="button" aria-pressed="false" autocomplete="off">
+										  		锁车
+											</button>
+										</td>
+										<td width="15%">
+											<button onclick="machineControl('geoFenceLock',false)" type="button" class="btn btn-success" data-toggle="button" aria-pressed="false" autocomplete="off">
+										  		解锁
+											</button>
+										</td>
+										<td align="center" id="geoFenceLockState">Loading</td>
+									</tr>
+									<tr id="changeColor1" style="font-size: 17px;height: 40px">
+										<td width="25%">时间围栏锁车:</td>
+										<td width="15%">
+											<button onclick="machineControl('timeFenceLock',true)" type="button" class="btn btn-danger" data-toggle="button" aria-pressed="false" autocomplete="off">
+										  		锁车
+											</button>
+										</td>
+										<td width="15%">
+											<button onclick="machineControl('timeFenceLock',false)" type="button" class="btn btn-success" data-toggle="button" aria-pressed="false" autocomplete="off">
+										  		解锁
+											</button>
+										</td>
+										<td align="center" id="timeFenceLockState">Loading</td>
+									</tr>
+									<tr id="changeColor1" style="font-size: 17px;height: 40px">
+										<td width="25%">开盖锁车:</td>
+										<td width="15%">
+											<button onclick="machineControl('openCoverLock',true)" type="button" class="btn btn-danger" data-toggle="button" aria-pressed="false" autocomplete="off">
+										  		锁车
+											</button>
+										</td>
+										<td width="15%">
+											<button onclick="machineControl('openCoverLock',false)" type="button" class="btn btn-success" data-toggle="button" aria-pressed="false" autocomplete="off">
+										  		解锁
+											</button>
+										</td>
+										<td align="center" id="openCoverLockState">Loading</td>
+									</tr>
+									<tr id="changeColor1" style="font-size: 17px;height: 40px">
+										<td width="25%">第一次无通信警告天数:</td>
+										<td colspan="2">
+											    <div class="input-group">
+											      <input id="firstWarnDays" type="text" class="form-control" placeholder="day">
+											      <span class="input-group-btn">
+											        <button onclick="machineConfig('firstWarnDays')" class="btn btn-default" type="button">设置</button>
+											      </span>
+											    </div>
+										</td>
+										<td align="center" id="firstWarnDaysValue">Loading</td>
+									</tr>
+									<tr id="changeColor1" style="font-size: 17px;height: 40px">
+										<td width="25%">第二次无通信警告天数:</td>
+										
+										<td colspan="2">
+											    <div class="input-group">
+											      <input id="secondWarnDays" type="text" class="form-control" placeholder="day">
+											      <span class="input-group-btn">
+											        <button onclick="machineConfig('secondWarnDays')" class="btn btn-default" type="button">设置</button>
+											      </span>
+											    </div>
+										</td>
+										<td align="center" id="secondWarnDaysValue">Loading</td>
+									</tr>
+									<tr id="changeColor1" style="font-size: 17px;height: 40px">
+										<td width="25%">无通信锁车天数:</td>
+										
+										<td colspan="2">
+											    <div class="input-group">
+											      <input id="engStopDays" type="text" class="form-control" placeholder="day" >
+											      <span class="input-group-btn">
+											        <button onclick="machineConfig('engStopDays')" class="btn btn-default" type="button">设置</button>
+											      </span>
+											    </div>
+										</td>
+										<td align="center" id="engStopDaysValue">Loading</td>
+									</tr>
+									<tr id="changeColor1" style="font-size: 17px;height: 40px">
+										<td width="25%">can信息上传周期:</td>
+									
+										<td colspan="2">
+											    <div class="input-group">
+											      <input id="canMsgUpdateInterval" type="text" class="form-control" placeholder="sec">
+											      <span class="input-group-btn">
+											        <button onclick="machineConfig('canMsgUpdateInterval')" class="btn btn-default" type="button">设置</button>
+											      </span>
+											    </div>
+										</td>
+										<td align="center" id="canMsgUpdateIntervalValue">Loading</td>
+									</tr>
+									<tr id="changeColor1" style="font-size: 17px;height: 40px">
+										<td width="25%">数据上传周期:</td>
+										
+										<td colspan="2">
+											    <div class="input-group">
+											      <input id="devMsgUpdateInterval" type="text" class="form-control" placeholder="sec">
+											      <span class="input-group-btn">
+											        <button onclick="machineConfig('devMsgUpdateInterval')" class="btn btn-default" type="button">设置</button>
+											      </span>
+											    </div>
+										</td>
+										<td align="center" id="devMsgUpdateIntervalValue">Loading</td>
+									</tr>
+										<tr id="changeColor1" style="font-size: 17px;height: 40px">
+										<td width="25%">故障码上传周期:</td>
+										
+										<td colspan="2">
+											    <div class="input-group">
+											      <input id="dtcUpdateInterval" type="text" class="form-control" placeholder="sec">
+											      <span class="input-group-btn">
+											        <button onclick="machineConfig('dtcUpdateInterval')" class="btn btn-default" type="button">设置</button>
+											      </span>
+											    </div>
+										</td>
+										<td align="center" id="dtcUpdateIntervalValue">Loading</td>
+									</tr>
+	
+								</table>
+							
+	
+						</div>
+						<!--中间内容1-->						
+						<div class=" col-md-2 col-sm-3 col-xs-6" style="padding-left:1%;padding-right:1%;float:left;border-right-color: #000000;background-color: #f5f5f5; ">	
+							<div style="min-height: 200px;background-color: #f5f5f5;text-align: center">
+								<table style="text-align: center;margin: 0 auto;width: 100%;margin-top: 10px;margin-bottom: 10px;">
+									<!--第一行-->
+									<tr>
+										<td  style="width: 100%;padding: 0 1% ">
+											<!--车辆电瓶电压-->
+											<div style="background-color: #fff;padding:0 0 0 9%;border: 1px solid #3483c8;border-radius: 4px">
+												<img src="./dianping.svg" style="width: 18%;float: left;margin-top: 8px">
+												<table class="cheliang" style="width:80%;">
+													<tr style="height: 35px">
+														<td colspan="2" style="font-family: fantasy;font-size: 16px;">车辆电瓶</td>
+													</tr>
+													<tr style="font-size: 15px;    font-weight: 900;">
+														<td>&nbsp;</td>
+														<td  id="vehicleBattery">Loading</td>
+														
+														
+													</tr>
+												</table>
+											</div>
+										</td>	
+									</tr>
+									<!--第二行-->
+									<tr>
+										<td style="width: 100%;padding: 0 1% ">
+											<!--GPS天线状态-->
+											<div style="background-color: #fff;padding:0 0 0 9%;border: 1px solid #ee8389;margin-top: 10px;border-radius: 4px">
+												<img src="./gps.svg" style="width: 18%;float: left;margin-top: 8px">
+												<table class="cheliang" style="width:80%;   ">
+													<tr style="height: 35px">
+														<td style="width: 20%;"> &nbsp;</td>
+														<td style="font-family: fantasy;font-size: 16px">GPS天线状态</td>
+													</tr>
+													<tr style="font-size: 15px;font-weight: 900;">
+														<td> &nbsp;</td>
+														<td id="gpsCableState">Loading</td>
+													</tr>
+													<!--<tr><td> &nbsp;</td></tr>-->
+												</table>
+											</div>
+										</td>
+									</tr>
+									<!--第三行-->
+									<tr>
+										<td style="width: 100%;padding: 0 1% ">
+											<!--锁车提醒-->
+											<div style="background-color: #fff;padding:0 0 0 9%;border: 1px solid #3483c8;margin-top: 10px;border-radius: 4px">
+												<img src="./suoche.svg" style="width: 18%;float: left;margin-top: 8px">
+													<table class="cheliang" style="width:80%;">
+														<tr style="height: 35px">
+															<td style="font-family: fantasy;font-size: 16px">锁车提醒</td>
+														</tr>
+														<tr style="font-size: 19px;font-weight: 800;color: red">
+															<td id="lockState">Loading</td>
+														</tr>
+													</table>
+											</div>
+										</td>										
+									</tr>	
+								</table>
+							</div>
+							<!-- /.col -->
+						</div>
+						<!--中间内容2-->						
+						<div class=" col-md-2 col-sm-3 col-xs-6" style="padding-left:1%;padding-right:1%;float:left;border-right-color: #000000;background-color: #f5f5f5; ">
+	
+							<div style="min-height: 200px;background-color: #f5f5f5;text-align: center">
+								<table style="text-align: center;margin: 0 auto;width: 100%;margin-top: 10px;margin-bottom: 10px;">
+									<!--第一行-->
+									<tr>
+										
+	
+										<td style="width: 100%;padding: 0 1% ">
+											<!--设备备用电池电量-->
+											<div style="background-color: #fff;padding:0 0 0 9%;border: 1px solid #3483c8;border-radius: 4px">
+												<img src="./dianchi.svg" style="width: 18%;float: left;margin-top: 8px">
+												<table class="cheliang" style="width:80%;">
+													<tr style="height: 35px">
+														<td colspan="2" style="font-family: fantasy;font-size: 16px;">电池电量</td>
+													</tr>
+													<tr style="font-size: 15px;    font-weight: 900;">
+														<td> &nbsp;</td>
+														<td id="moduleBattery">Loading</td>
+													</tr>
+	
+												</table>
+											</div>
+										</td>
+										
+	
+									</tr>
+									<!--第二行-->
+									<tr>
+										
+										<td style="width: 100%;padding: 0 1% ">
+											<!--定位状态-->
+											<div style="background-color: #fff;padding:0 0 0 9%;border: 1px solid #f8c047;margin-top: 10px;border-radius: 4px">
+												<img src="./dingwei.svg" style="width: 18%;float: left;margin-top: 8px">
+												<table class="cheliang" style="width:80%;  ">
+													<tr style="height: 35px">
+														<td style="width: 20%;"> &nbsp;</td>
+														<td style="font-family: fantasy;font-size: 16px">定位状态</td>
+													</tr>
+													<tr style="font-size: 15px;font-weight: 900;">
+														<td> &nbsp;</td>
+														<td id="locateMode">Loading</td>
+													</tr>
+													<!--<tr><td> &nbsp;</td></tr>-->
+												</table>
+											</div>
+										</td>
+	
+										
+									</tr>
+									<!--第三行-->
+									<tr>
+										
+										<td style="width: 100%;padding: 0 1% ">
+												<!--总线通信状态-->
+												<div style="background-color: #fff;padding:0 0 0 9%;border: 1px solid #3483c8;margin-top: 10px;border-radius: 4px">
+													<img src="./tongxin.svg" style="width: 18%;float: left;margin-top: 8px">
+													<table class="cheliang" style="width: 80%;">
+														<tr style="height: 35px">
+															<td style="font-family: fantasy;font-size: 16px">总线通信状态</td>
+														</tr>
+														<tr style="font-size: 19px;font-weight: 800">
+															<td id="canBusState">Loading</td>
+														</tr>
+														<!--<tr><td> &nbsp;</td></tr>-->
+													</table>
+												</div>
+										</td>
+									</tr>
+	
+								</table>
+							</div>
+							<!-- /.col -->
+						</div>					
+						<!--右边内容1-->
+						<div class=" col-md-2 col-sm-3 col-xs-6" style="padding-left:1%;padding-right:1%;float:left;border-right-color: #000000;background-color: #f5f5f5; ">
+							<div style="min-height: 200px;background-color: #f5f5f5;text-align: center">
+								<table style="text-align: center;margin: 0 auto;width: 100%;margin-top: 10px;margin-bottom: 10px;">
+									<!--第一行-->
+									<tr>										
+										<td style="width: 100%;padding: 0 1% ">
+											<!--车辆状态-->
+											<div style="background-color: #fff;padding:0 0 0 9%;border: 1px solid #3483c8;border-radius: 4px">
+												<img src="./cheliang.svg" style="width: 18%;float: left;margin-top: 8px">
+												<table class="cheliang" style="width: 80%; ">
+													<tr style="height: 35px">
+														<td style="font-family: fantasy;font-size: 16px">ACC状态</td>
+													</tr>
+													<tr style="font-size: 15px;font-weight: 900;">
+														<td id="acc">Loading</td>
+													</tr>
+												</table>
+											</div>
+										</td>	
+									</tr>
+									<!--第二行-->
+									<tr>							
+										<td style="width: 100%;padding: 0 1% ">
+											<!--4G信号强-->
+											<div style="background-color: #fff;padding:0 0 0 9%;border: 1px solid #3483c8;margin-top: 10px;border-radius: 4px">
+												<img src="./4G.svg" style="width: 18%;float: left;margin-top: 8px;">
+												<table class="cheliang" style="width:80%;  ">
+													<tr style="height: 35px">
+														<td style="width: 20%;"> &nbsp;</td>
+														<td style="font-family: fantasy;font-size: 16px">4G信号强度</td>
+													</tr>
+													<tr style="font-size: 15px;font-weight: 900;">
+														<td> &nbsp;</td>
+														<td id="fourGSignalNo">Loading</td>
+													</tr>
+												</table>
+											</div>
+										</td>
+									</tr>
+									<!--第三行-->
+									<tr>
+										
+	
+										<td style="width: 100%;padding: 0 1% ">
+											<!--当前故障报警-->
+											<div style="background-color: #fff;padding:0 0 0 9%;border: 1px solid #ee8389;margin-top: 10px;border-radius: 4px">
+												<img src="./baojing.svg" style="width: 18%;float: left;margin-top: 8px">
+												<table class="cheliang" style="width: 80%;">
+													<tr style="height: 35px">
+														<td style="font-family: fantasy;font-size: 16px">当前故障报警</td>
+													</tr>
+													<tr style="font-size: 19px;font-weight: 800">
+														<td id="currentFault">Loading</td>
+													</tr>
+												</table>
+											</div>
+										</td>	
+									</tr>	
+								</table>
+							</div>
+						</div>						
+						<!--右边内容2-->
+						<div class="col-md-2 col-sm-3 col-xs-6" style="padding-left:1%;padding-right:1%;float:left;border-right-color: #000000;background-color: #f5f5f5; ">
+							<div style="min-height: 200px;background-color: #f5f5f5;text-align: center">
+								<table style="text-align: center;margin: 0 auto;width: 100%;margin-top: 10px;margin-bottom: 10px;">
+									
+										<!--第一行-->
+									<tr>
+										
+										<td style="width: 100%;padding: 0 1% ">
+											<!--车辆状态-->
+											<div style="background-color: #fff;padding:0 0 0 9%;border: 1px solid #3483c8;border-radius: 4px">
+												<img src="./cheliang.svg" style="width: 18%;float: left;margin-top: 8px">
+												<table class="cheliang" style="width: 80%; ">
+													<tr style="height: 35px">
+														<td style="font-family: fantasy;font-size: 16px">点火状态</td>
+													</tr>
+													<tr style="font-size: 15px;font-weight: 900;">
+														<td id="start">Loading</td>
+													</tr>
+												</table>
+											</div>
+										</td>
+									</tr>
+									<!--第二行-->
+									<tr>											
+										<td style="width: 100%;padding: 0 1% ">
+											<!--车辆状态-->
+											<div style="background-color: #fff;padding:0 0 0 8%;border: 1px solid #3483c8;margin-top: 10px;border-radius: 4px">
+												<img src="./wifi.svg" style="width: 23%;float: left;margin-top: 8px;">	
+												<table class="cheliang" style="width:58%; margin-left: 6%; ">
+													<tr style="height: 35px">
+														<td style="width: 20%;"> &nbsp;</td>
+														<td style="font-family: fantasy;font-size: 16px">WIFI信号</td>
+													</tr>
+													<tr style="font-size: 15px;font-weight: 900;">
+														<td> &nbsp;</td>
+														<td id="wifiSignalNo">Loading</td>
+													</tr>
+												</table>
+											</div>
+										</td>
+									</tr>
+									<!--第三行-->
+									<tr>		
+										<td style="width: 100%;padding: 0 1% ">
+											<!--工作小时-->									
+											<div style="background-color: #fff;padding:0 0 0 9%;border: 1px solid #ee8389;margin-top: 10px;border-radius: 4px">
+												<img src="./hour.svg" style="width: 18%;float: left;margin-top: 8px">
+												<table class="cheliang" style="width:80%;  ">
+													<tr style="height: 35px">														
+														<td colspan="2" style="font-family: fantasy;font-size: 16px">工作小时</td>
+													</tr>
+													<tr style="font-size: 19px;font-weight: 800;">
+														<td>&nbsp;</td>
+														<td  id="workHours">Loading</td>														
+													</tr>
+												</table>
+											</div>											
+										</td>	
+									</tr>	
+								</table>
+							</div>
+						</div>
+						<!--空白内容-->
+						<div class="col-md-1 col-sm-1 col-xs-0" style="float:left;padding-top: 2%;">
+						</div>
+						<!--油量仪表盘内容-->
+						<div class="col-md-2 col-sm-2 col-xs-12" style="float:left;padding-top: 2%;">
+							<table style="margin: 0 auto;width:100%;height: 200px;margin-top: 10px">
+								<tr>
+									<td style="text-align: center;background-color: #fff">									
+										<div id="oilChart" style="margin:0 auto;height: 100%;"></div>
+									</td>
+								</tr>
+							</table>						
+						</div>
+						<!--转速仪表盘内容-->
+						<div class="col-md-2 col-sm-2 col-xs-12" style="float:left;padding-top: 2%;">						
+							<table style="margin: 0 auto;width:100%;height: 200px;margin-top: 10px">	
+								<tr>
+									<td style="text-align: center;background-color: #fff">										
+										<div id="speedChart" style="margin:0 auto;height: 100%;"></div>
+									</td>
+								</tr>
+							</table>						
+						</div>
+						<!--温度仪表盘内容-->
+						<div class="col-md-2 col-sm-2 col-xs-12" style="float:left;padding-top: 2%;">						
+							<table style="margin: 0 auto;width:100%;height: 200px;margin-top: 10px">
+	
+								<tr>
+									<td style="text-align: center;background-color: #fff">
+										
+										<div id="temperatureChart" style="margin:0 auto;height: 100%;"></div>
+									</td>
+								</tr>
+							</table>						
+						</div>
+					</div>			
+				</div>
+			</div>
+		</div>
+	</body>
+</html>

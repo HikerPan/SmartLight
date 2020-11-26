@@ -1,0 +1,169 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html;charset=UTF-8">
+	<title>升级</title>
+</head>
+<body>
+	<table border="0" width="70%" align="center" cellpadding="6" id="tab" cellspacing="0" >
+		<tr><th colspan="4">固件升级</th></tr>
+		<tr><td colspan="4"><hr/></td></tr>
+		<tr align="left">
+			<th width="40%">文件</th>
+			<th width="15%">大小</th>
+			<th width="20%">状态</th>
+			<th width="25%"></th>
+		</tr>
+		<tr  align="left">
+			<td><input type="file" id="binFile" accept=".bin" onchange="return fileChg(this);"></td>
+			<td>----</td>
+			<td>----</td>
+			<td><input type="button" onclick="upgread()" value="升级"/></td>
+		</tr>
+		<tr><td colspan="4"><hr/></td></tr>
+				<tr><td colspan="4">&nbsp;</td></tr>
+				<tr><th colspan="4">网页升级批量</th></tr>
+				<tr><td colspan="4"><hr/></td></tr>
+				
+				<tr>
+					<td width="40%"><input type="file" name="allFiles" id="allFiles" multiple="multiple" /></td>
+					<td width="15%">----</td>
+					<td width="20%" id="state">----</td>
+					<td width="25%">----</td>
+				</tr>
+				<tr>
+					<td colspan="3"></td>
+					<td>
+						<input type="button" onclick="uploadAllFile()" value="批量上传"/>						
+					</td>
+				</tr>
+				<tr><td colspan="4"><hr/></td></tr>
+	</table>
+		
+    <script type="text/javascript"> 
+        function uploadAllFile() {			
+			var files = document.getElementById("allFiles").files;        
+            if(!files || files.length == 0){
+                alert("请选择文件！");
+                return;
+            }
+			if( sendHead(files)){
+				sendFile(files, 0);
+			}
+			document.getElementById("state").innerHTML = "等待上传";
+
+		}
+		function fileChg(obj) {
+			var fz=obj.files[0].size;
+			if( fz > 1024*1024 ){
+				fz=(fz/1024/1024).toFixed(1) + "MB";
+			}else if(fz > 1024){
+				fz=(fz/1024).toFixed(1) + "KB";
+			}else{
+				fz=fz+"B";
+			}
+			var sta=obj.parentNode.parentNode.cells;
+			sta[1].innerHTML=fz;
+			sta[2].innerHTML="等待上传";
+		}		
+		function sendFile(fileObj, index) {
+			if ( index >= fileObj.length){
+				alert("上传完成");
+				return;
+			}
+			
+			xhr=new XMLHttpRequest();
+			var url = "";
+			if(fileObj[index].name.endsWith(".gz")){
+				url="/html/"+fileObj[index].name.substring(0,fileObj[index].name.length-3)
+			}else {
+				url="/html/"+fileObj[index].name
+			}
+			
+			xhr.open("put", url, true);
+			xhr.upload.onprogress=function progressFunction(evt) {
+				if (evt.lengthComputable) {
+					document.getElementById("state").innerHTML= "第"+(index+1)+"个文件"+Math.round(evt.loaded / evt.total * 100) + "%" ;
+				}
+			};
+			
+			xhr.onreadystatechange=function () {
+				if ( xhr.readyState==2 ){
+					document.getElementById("state").innerHTML="第"+(index+1)+"个文件"+"正在校验";
+				}else if (xhr.readyState==4) {
+					if( xhr.status==201){
+						document.getElementById("state").innerHTML="第"+(index+1)+"个文件"+"上传成功";
+						index=index+1;
+						sendFile(fileObj, index);
+					}else{
+						document.getElementById("state").innerHTML="第"+(index+1)+"个文件"+"上传失败";
+					}
+				}
+			}
+			xhr.send(fileObj[index]);
+		}
+		function sendHead(fileObj) {
+			var dataArr=[];
+			for(var i = 0; i < fileObj.length; i++){
+                var data={};
+				data.Name=fileObj[i].name;
+				if(data.Name.endsWith(".gz")){
+					data.Name = data.Name.substring(0,data.Name.length-3)
+				}
+				data.Length=parseInt(fileObj[i].size);
+				dataArr.push(data)
+            }
+			xhr=new XMLHttpRequest();
+			xhr.open("post", "/html/header", false);
+			xhr.send(JSON.stringify(dataArr));
+			return true;
+		}
+		
+		function reboot(){
+			xhr=new XMLHttpRequest();
+			xhr.open("post", "/control", true);
+			xhr.onreadystatechange=function () {
+				if (xhr.readyState==4) {
+					if( xhr.status==200){
+						alert("设备正在重启");
+					}else{
+						alert("设备重启失败");
+					}
+				}
+			}
+			xhr.send("{\"Action\":0}");
+		}
+		function upgread(){
+			var file=document.getElementById("binFile").files[0];
+			if(file==null){
+				alert("请选择固件");
+				return;
+			}
+			var t=document.getElementById('tab');
+			xhr=new XMLHttpRequest();
+			xhr.upload.onprogress=function progressFunction(evt) {
+				if (evt.lengthComputable) {
+					t.rows[3].cells[2].innerHTML= Math.round(evt.loaded / evt.total * 100) + "%";
+				}
+			};
+			xhr.open("put", "/upgrade", true);
+			t.rows[3].cells[2].innerHTML="0%";
+			xhr.onreadystatechange=function () {
+				if ( xhr.readyState==2 ){
+					t.rows[3].cells[2].innerHTML="正在校验";
+				}else if (xhr.readyState==4) {
+					if( xhr.status==201){
+						t.rows[3].cells[2].innerHTML="上传成功";
+						alert("升级成功，设备正在重启");
+					}else{
+						t.rows[3].cells[2].innerHTML="上传失败";
+						alert("升级失败");
+					}
+				}
+			}
+			xhr.send(file);
+		}
+	</script>
+</body>
+</html>

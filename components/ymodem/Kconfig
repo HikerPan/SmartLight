@@ -1,0 +1,27 @@
+menu "YMODEM"
+
+    config YMODEM_OTA_ENABLE
+        bool "enable ymodem ota function"
+        default y
+        help 
+			this is a switch for ymodem ota
+	
+	config YMODEM_RECEIVE_ENABLE
+        bool "enable ymodem rcveive function"
+        default y
+        help 
+			this is a switch for ymodem receive
+			
+	config YMODEM_SEND_ENABLE
+        bool "enable ymodem send function"
+        default y
+        help 
+			this is a switch for ymodem send
+	
+	config YMODEM_PACKET_SIZE
+        int "ymodem packet size"
+        default 1024
+        help 
+				
+
+endmenu
